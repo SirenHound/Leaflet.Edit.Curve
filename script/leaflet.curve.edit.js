@@ -1,6 +1,9 @@
 L.DivIconStyled = L.DivIcon.extend({
   createIcon: function(){
-    var r = L.DivIcon.prototype.createIcon.apply(this); L.Util.extend (r.style, this.options.styleOptions);//.backgroundColor = "yellow";
+    var r = L.DivIcon.prototype.createIcon.apply(this);
+    for (var styleOption in this.options.styleOptions){
+      r.style[styleOption] = this.options.styleOptions[styleOption];
+    }//.backgroundColor = "yellow";
     return r;
   }
 });
