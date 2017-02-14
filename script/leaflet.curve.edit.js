@@ -22,7 +22,7 @@ L.Curve.include({
   getTypedMarkers: function(){
     var markers = [];
     var icons = {
-      qControl: new L.DivIconStyled({backgroundColor: 'yellow'})
+      qControl: new L.DivIconStyled({styleOptions{backgroundColor: 'yellow'}})
     };
     
     this._coords.forEach(function(coord, i, coords){
