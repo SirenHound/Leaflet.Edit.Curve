@@ -29,7 +29,7 @@ L.Curve.include({
           markers.push(new L.Marker(coords[i+1], {type: "control1", icon: icons.qControl}));
         }
       }
-    }
+    });
     return markers;
   }
 
