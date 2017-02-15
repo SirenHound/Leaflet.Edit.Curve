@@ -29,7 +29,7 @@ L.Curve.include({
     
 	var prev;
 	var layers = [];
-	var runSwitch = function(coord){
+	var runSwitch = function(coord, i, coords){
 		switch (coord){
 			case "M": case "L": // Single point
 				markers.push(new L.Marker(coords[i+1], {type: "anchor", icon: new L.DivIcon()}));
@@ -67,11 +67,11 @@ L.Curve.include({
 	this._coords.forEach(function(coord, i, coords){
 		if ("string" === typeof coord){
 
-			layers.concat(runSwitch(coord));
+			layers.concat(runSwitch(coord, i, coords));
 			prev = coord;
 		}
 		else{
-			layers.concat(runSwitch(prev));
+			layers.concat(runSwitch(prev, i-1, coords));
 		}
 	});
     return layers; //markers.concat(guiLayers);
