@@ -83,12 +83,28 @@ L.Curve.include({
 			case "C":// 3 coords
 				i += 3;
 				break;
+			default:
+				i++;
 			}
 			
 			prev = coord;
 		}
 		else{
 			layers = layers.concat(runSwitch(prev, i-1, coords));
+			switch (prev){
+			case "M": case "L": case "V": case "H": // Single point (or Array)
+				i++;
+				break;
+			case "S": case "Q":// 2 coords
+				i += 2;
+				break;
+			case "C":// 3 coords
+				i += 3;
+				break;
+			default:
+				i++;
+			}
+			
 		}
 	}
     return layers; //markers.concat(guiLayers);
