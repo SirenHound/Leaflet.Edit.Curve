@@ -67,11 +67,11 @@ L.Curve.include({
 	this._coords.forEach(function(coord, i, coords){
 		if ("string" === typeof coord){
 
-			layers.concat(runSwitch(coord, i, coords));
+			layers = layers.concat(runSwitch(coord, i, coords));
 			prev = coord;
 		}
 		else{
-			layers.concat(runSwitch(prev, i-1, coords));
+			layers = layers.concat(runSwitch(prev, i-1, coords));
 		}
 	});
     return layers; //markers.concat(guiLayers);
