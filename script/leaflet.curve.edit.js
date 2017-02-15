@@ -64,16 +64,32 @@ L.Curve.include({
 		}
 		return markers.concat(guiLayers);
 	};
-	this._coords.forEach(function(coord, i, coords){
+	
+	for (var i = 0; i < coords.length;){
+	//this._coords.forEach(function(coord, i, coords){
+		var coord = coords[i];
+		
 		if ("string" === typeof coord){
 
 			layers = layers.concat(runSwitch(coord, i, coords));
+			switch (coord){
+			case "M": case "L": case "V": case "H": // Single point (or Array)
+				i++;
+				break;
+			case "S": case "Q":// 2 coords
+				i += 2;
+				break;
+			case "C":// 3 coords
+				i += 3;
+				break;
+			}
+			
 			prev = coord;
 		}
 		else{
 			layers = layers.concat(runSwitch(prev, i-1, coords));
 		}
-	});
+	}
     return layers; //markers.concat(guiLayers);
   }
 
