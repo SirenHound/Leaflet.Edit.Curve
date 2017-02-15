@@ -66,7 +66,7 @@ L.Curve.include({
 	};
 	
 	var coords = this._coords;
-	for (var i = 0; i < coords.length;){
+	for (var i = 0; i < coords.length;i++){
 	//this._coords.forEach(function(coord, i, coords){
 		var coord = coords[i];
 		
