@@ -62,7 +62,7 @@ L.Curve.include({
 				guiLayers.push(new L.Polyline([coords[i+2], coords[i+3]], {color: 'yellow'}));
 				break;
 		}
-		return [markers, guiLayers];
+		return markers.concat(guiLayers);
 	};
 	this._coords.forEach(function(coord, i, coords){
 		if ("string" === typeof coord){
