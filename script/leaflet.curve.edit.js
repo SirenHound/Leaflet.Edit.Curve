@@ -8,7 +8,6 @@ L.DivIconStyled = L.DivIcon.extend({
   }
 });
 
-
 L.Curve.include({
   getLatLngs: function(){
     return this._coords.filter(function(coord){
@@ -21,6 +20,7 @@ L.Curve.include({
   */
   getTypedMarkers: function(){
     var markers = [];
+    var guiLayers = [];
     var icons = {
       qControl: new L.DivIconStyled({styleOptions:{backgroundColor: 'yellow'}})
     };
@@ -30,6 +30,8 @@ L.Curve.include({
         switch (coord){
           case "Q":// Quadratic has 2 coords
           markers.push(new L.Marker(coords[i+1], {type: "control1", icon: icons.qControl}));
+          markers.push(new L.Marker(coords[i+2], {type: "anchor", icon: new L.DivIcon()}));
+          guiLayers.push(new L.Polyline([coords[i+1], coords[i+2]], {color: 'yellow'}));
         }
       }
     });
