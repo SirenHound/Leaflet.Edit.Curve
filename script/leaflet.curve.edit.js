@@ -65,9 +65,9 @@ L.Curve.include({
 		return markers.concat(guiLayers);
 	};
 	
+	var coords = this._coords;
 	for (var i = 0; i < coords.length;){
 	//this._coords.forEach(function(coord, i, coords){
-		var coords = this._coords;
 		var coord = coords[i];
 		
 		if ("string" === typeof coord){
