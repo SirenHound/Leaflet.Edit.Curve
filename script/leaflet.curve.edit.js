@@ -23,8 +23,8 @@ L.Curve.include({
       qControl: new L.DivIconStyled({styleOptions:{backgroundColor: 'yellow'}}),
       cControl1: new L.DivIconStyled({styleOptions:{backgroundColor: 'yellow'}}),
       cControl2: new L.DivIconStyled({styleOptions:{backgroundColor: 'orange'}}),
-      vAnchor: new L.DivIconStyled({styleOptions:{backgroundColor: 'green'}}),
-      hAnchor: new L.DivIconStyled({styleOptions:{backgroundColor: 'pink'}})
+      vAnchor: new L.DivIconStyled({html: '\u21D4', styleOptions:{backgroundColor: 'green'}}),
+      hAnchor: new L.DivIconStyled({html: '\u27FA', styleOptions:{backgroundColor: 'pink'}})
     };
     
 	var prev;
@@ -42,7 +42,7 @@ L.Curve.include({
 					case "M": case "L":
 					markers.push(new L.Marker([coords[i+1][0], coords[i-backBy][1]], {type: "anchor", icon: icons.vAnchor}));
 					break;
-					case "V":// Need to go back further!
+					case "V":// Need to go back further! \21D4
 //					markers.push(new L.Marker([coords[i+1][0], coords[i-backBy][0]], {type: "anchor", icon: icons.vAnchor}));
 					break;
 					case "H":
