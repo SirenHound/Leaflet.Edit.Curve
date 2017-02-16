@@ -52,7 +52,7 @@ L.DraggableH = L.Draggable.extend({
 L.Handler.MarkerDragH = L.Handler.MarkerDrag.extend({
 	addHooks: function() {
 		var t = this._marker._icon;
-		this._draggable || (this._draggable = new L.Draggable(t,t,!0)),
+		this._draggable || (this._draggable = new L.DraggableH(t,t,!0)),
 		this._draggable.on({
 			dragstart: this._onDragStart,
 			drag: this._onDrag,
