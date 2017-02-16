@@ -1,50 +1,4 @@
-L.Draggable = L.Evented.extend({
-	options: {
-		clickTolerance: 3
-	},
-	statics: {
-		START: L.Browser.touch ? ["touchstart", "mousedown"] : ["mousedown"],
-		END: {
-			mousedown: "mouseup",
-			touchstart: "touchend",
-			pointerdown: "touchend",
-			MSPointerDown: "touchend"
-		},
-		MOVE: {
-			mousedown: "mousemove",
-			touchstart: "touchmove",
-			pointerdown: "touchmove",
-			MSPointerDown: "touchmove"
-		}
-	},
-	initialize: function(t, e, i) {
-		this._element = t,
-		this._dragStartTarget = e || t,
-		this._preventOutline = i
-	},
-	enable: function() {
-		this._enabled || (L.DomEvent.on(this._dragStartTarget, L.Draggable.START.join(" "), this._onDown, this),
-		this._enabled = !0)
-	},
-	disable: function() {
-		this._enabled && (L.DomEvent.off(this._dragStartTarget, L.Draggable.START.join(" "), this._onDown, this),
-		this._enabled = !1,
-		this._moved = !1)
-	},
-	_onDown: function(t) {
-		if (!t._simulated && this._enabled && (this._moved = !1,
-		!L.DomUtil.hasClass(this._element, "leaflet-zoom-anim") && !(L.Draggable._dragging || t.shiftKey || 1 !== t.which && 1 !== t.button && !t.touches) && this._enabled && (L.Draggable._dragging = !0,
-		this._preventOutline && L.DomUtil.preventOutline(this._element),
-		L.DomUtil.disableImageDrag(),
-		L.DomUtil.disableTextSelection(),
-		!this._moving))) {
-			var e = this._dragStartTarget;
-			this.fire("down");
-			var i = t.touches ? t.touches[0] : t;
-			this._startPoint = new L.Point(i.clientX,i.clientY),
-			L.DomEvent.on(e, L.Draggable.MOVE[t.type], this._onMove, this).on(e, L.Draggable.END[t.type], this._onUp, this)
-		}
-	},
+L.DraggableH = L.Draggable.extend({
 	_onMove: function(i) {
 		if (!i._simulated && this._enabled) {
 			if (i.touches && i.touches.length > 1)
@@ -57,7 +11,7 @@ L.Draggable = L.Evented.extend({
 			this._moved || (this.fire("dragstart"),
 			this._moved = !0,
 			this._startPos = L.DomUtil.getPosition(this._element).subtract(r),
-			L.DomUtil.addClass(e.body, "leaflet-dragging"),
+			L.DomUtil.addClass(document.body, "leaflet-dragging"),
 			this._lastTarget = i.target || i.srcElement,
 			t.SVGElementInstance && this._lastTarget instanceof SVGElementInstance && (this._lastTarget = this._lastTarget.correspondingUseElement),
 			L.DomUtil.addClass(this._lastTarget, "leaflet-drag-target")),
@@ -78,11 +32,11 @@ L.Draggable = L.Evented.extend({
 	},
 	_onUp: function(t) {
 		if (!t._simulated && this._enabled) {
-			L.DomUtil.removeClass(e.body, "leaflet-dragging"),
+			L.DomUtil.removeClass(document.body, "leaflet-dragging"),
 			this._lastTarget && (L.DomUtil.removeClass(this._lastTarget, "leaflet-drag-target"),
 			this._lastTarget = null);
 			for (var i in L.Draggable.MOVE)
-				L.DomEvent.off(e, L.Draggable.MOVE[i], this._onMove, this).off(e, L.Draggable.END[i], this._onUp, this);
+				L.DomEvent.off(document, L.Draggable.MOVE[i], this._onMove, this).off(document, L.Draggable.END[i], this._onUp, this);
 			L.DomUtil.enableImageDrag(),
 			L.DomUtil.enableTextSelection(),
 			this._moved && this._moving && (L.Util.cancelAnimFrame(this._animRequest),
