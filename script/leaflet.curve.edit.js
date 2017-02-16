@@ -23,6 +23,8 @@ L.Curve.include({
       qControl: new L.DivIconStyled({styleOptions:{backgroundColor: 'yellow'}}),
       cControl1: new L.DivIconStyled({styleOptions:{backgroundColor: 'yellow'}}),
       cControl2: new L.DivIconStyled({styleOptions:{backgroundColor: 'orange'}})
+      vAnchor: new L.DivIconStyled({styleOptions:{backgroundColor: 'green'}})
+      hAnchor: new L.DivIconStyled({styleOptions:{backgroundColor: 'pink'}})
     };
     
 	var prev;
@@ -35,6 +37,20 @@ L.Curve.include({
 				markers.push(new L.Marker(coords[i+1], {type: "anchor", icon: new L.DivIcon()}));
 				break;
 			case "V":
+				var backBy = 1; // How far back to look for the other half of the coordinate
+				switch (prev) {
+					case "M": case "L":
+					markers.push(new L.Marker([coords[i+1][0], coords[i-backBy][1]], {type: "anchor", icon: icons.vAnchor}));
+					break;
+					case "V":// Need to go back further!
+//					markers.push(new L.Marker([coords[i+1][0], coords[i-backBy][0]], {type: "anchor", icon: icons.vAnchor}));
+					break;
+					case "H":
+					markers.push(new L.Marker([coords[i+1][0], coords[i-backBy][0]], {type: "anchor", icon: icons.vAnchor}));
+					break;
+					default:
+					markers.push(new L.Marker([coords[i+1][0], coords[i-backBy][1]], {type: "anchor", icon: icons.vAnchor}));
+				}
 				break;
 			case "H":
 				break;
