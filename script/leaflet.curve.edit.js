@@ -53,6 +53,19 @@ L.Curve.include({
 				}
 				break;
 			case "H":
+				var backBy = 1; // How far back to look for the other half of the coordinate
+				switch (prev) {
+					case "M": case "L":
+						markers.push(new L.Marker([coords[i-backBy][0], coords[i+1][0]], {type: "anchor", icon: icons.hAnchor}));
+						break;
+					case "V":
+						markers.push(new L.Marker([coords[i-backBy][0], coords[i+1][0]], {type: "anchor", icon: icons.hAnchor}));
+						break;
+					case "H":// Need to go back further!
+						break;
+					default:
+						markers.push(new L.Marker([coords[i-backBy][0], coords[i+1][0]], {type: "anchor", icon: icons.hAnchor}));
+				}
 				break;
 			case "Q":// Quadratic has 2 coords
 				markers.push(new L.Marker(coords[i+1], {type: "control1", icon: icons.qControl}));
