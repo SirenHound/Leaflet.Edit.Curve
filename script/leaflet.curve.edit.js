@@ -23,8 +23,8 @@ L.Curve.include({
       qControl: new L.DivIconStyled({styleOptions:{backgroundColor: 'yellow'}}),
       cControl1: new L.DivIconStyled({styleOptions:{backgroundColor: 'yellow'}}),
       cControl2: new L.DivIconStyled({styleOptions:{backgroundColor: 'orange'}}),
-      vAnchor: new L.DivIconStyled({html: '\u21D5', styleOptions:{backgroundColor: 'green'}}),
-      hAnchor: new L.DivIconStyled({html: '\u21D4', styleOptions:{backgroundColor: 'pink'}})
+      vAnchor: new L.DivIconStyled({html: '\u21D5', styleOptions:{cursor: 'ns-resize', backgroundColor: 'lightblue'}}),
+      hAnchor: new L.DivIconStyled({html: '\u21D4', styleOptions:{cursor: 'ew-resize', backgroundColor: 'pink'}})
     };
     
 	var prev;
