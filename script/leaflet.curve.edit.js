@@ -13,7 +13,7 @@ L.DraggableH = L.Draggable.extend({
 			this._startPos = L.DomUtil.getPosition(this._element).subtract(r),
 			L.DomUtil.addClass(document.body, "leaflet-dragging"),
 			this._lastTarget = i.target || i.srcElement,
-			t.SVGElementInstance && this._lastTarget instanceof SVGElementInstance && (this._lastTarget = this._lastTarget.correspondingUseElement),
+			window.SVGElementInstance && this._lastTarget instanceof SVGElementInstance && (this._lastTarget = this._lastTarget.correspondingUseElement),
 			L.DomUtil.addClass(this._lastTarget, "leaflet-drag-target")),
 			this._newPos = this._startPos.add(r),
 			this._moving = !0,
