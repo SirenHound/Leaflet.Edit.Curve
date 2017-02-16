@@ -19,8 +19,6 @@ L.Curve.include({
   /** Create markers from the points defining this curve and assign them as types
   */
   getTypedMarkers: function (){
-    var markers = [];
-    var guiLayers = [];
     var icons = {
       qControl: new L.DivIconStyled({styleOptions:{backgroundColor: 'yellow'}}),
       cControl1: new L.DivIconStyled({styleOptions:{backgroundColor: 'yellow'}}),
@@ -30,6 +28,8 @@ L.Curve.include({
 	var prev;
 	var layers = [];
 	var runSwitch = function(coord, i, coords){
+		var markers = [];
+		var guiLayers = [];
 		switch (coord){
 			case "M": case "L": // Single point
 				markers.push(new L.Marker(coords[i+1], {type: "anchor", icon: new L.DivIcon()}));
