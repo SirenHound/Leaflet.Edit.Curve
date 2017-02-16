@@ -4,9 +4,7 @@ L.DraggableH = L.Draggable.extend({
 			if (i.touches && i.touches.length > 1)
 				return void (this._moved = !0);
 			var n = i.touches && 1 === i.touches.length ? i.touches[0] : i
-			  , /*s = new L.Point(n.clientX,n.clientY); */ r = new L.Point(n.clientX - this._startPoint.x, -this._startPoint.y);
-			 // s.x = s.x - this._startPoint.x;
-			 // r = s; //s.subtract(this._startPoint);
+			  , r = new L.Point(n.clientX - this._startPoint.x, -this._startPoint.y);
 			(r.x || r.y) && (Math.abs(r.x) + Math.abs(r.y) < this.options.clickTolerance || (L.DomEvent.preventDefault(i),
 			this._moved || (this.fire("dragstart"),
 			this._moved = !0,
@@ -21,31 +19,6 @@ L.DraggableH = L.Draggable.extend({
 			this._lastEvent = i,
 			this._animRequest = L.Util.requestAnimFrame(this._updatePosition, this, !0)))
 		}
-	},
-	_updatePosition: function() {
-		var t = {
-			originalEvent: this._lastEvent
-		};
-		this.fire("predrag", t),
-		L.DomUtil.setPosition(this._element, this._newPos),
-		this.fire("drag", t)
-	},
-	_onUp: function(t) {
-		if (!t._simulated && this._enabled) {
-			L.DomUtil.removeClass(document.body, "leaflet-dragging"),
-			this._lastTarget && (L.DomUtil.removeClass(this._lastTarget, "leaflet-drag-target"),
-			this._lastTarget = null);
-			for (var i in L.Draggable.MOVE)
-				L.DomEvent.off(document, L.Draggable.MOVE[i], this._onMove, this).off(document, L.Draggable.END[i], this._onUp, this);
-			L.DomUtil.enableImageDrag(),
-			L.DomUtil.enableTextSelection(),
-			this._moved && this._moving && (L.Util.cancelAnimFrame(this._animRequest),
-			this.fire("dragend", {
-				distance: this._newPos.distanceTo(this._startPos)
-			})),
-			this._moving = !1,
-			L.Draggable._dragging = !1
-		}
 	}
 });
 
@@ -59,25 +32,43 @@ L.Handler.MarkerDragH = L.Handler.MarkerDrag.extend({
 			dragend: this._onDragEnd
 		}, this).enable(),
 		L.DomUtil.addClass(t, "leaflet-marker-draggable")
-	},
-	removeHooks: function() {
-		this._draggable.off({
+	}
+});
+
+L.DraggableV = L.Draggable.extend({
+	_onMove: function(i) {
+		if (!i._simulated && this._enabled) {
+			if (i.touches && i.touches.length > 1)
+				return void (this._moved = !0);
+			var n = i.touches && 1 === i.touches.length ? i.touches[0] : i
+			  , r = new L.Point(-this._startPoint.x, n.clientY - this._startPoint.y);
+			(r.x || r.y) && (Math.abs(r.x) + Math.abs(r.y) < this.options.clickTolerance || (L.DomEvent.preventDefault(i),
+			this._moved || (this.fire("dragstart"),
+			this._moved = !0,
+			this._startPos = L.DomUtil.getPosition(this._element).subtract(r),
+			L.DomUtil.addClass(document.body, "leaflet-dragging"),
+			this._lastTarget = i.target || i.srcElement,
+			window.SVGElementInstance && this._lastTarget instanceof SVGElementInstance && (this._lastTarget = this._lastTarget.correspondingUseElement),
+			L.DomUtil.addClass(this._lastTarget, "leaflet-drag-target")),
+			this._newPos = this._startPos.add(r),
+			this._moving = !0,
+			L.Util.cancelAnimFrame(this._animRequest),
+			this._lastEvent = i,
+			this._animRequest = L.Util.requestAnimFrame(this._updatePosition, this, !0)))
+		}
+	}
+});
+
+L.Handler.MarkerDragV = L.Handler.MarkerDrag.extend({
+	addHooks: function() {
+		var t = this._marker._icon;
+		this._draggable || (this._draggable = new L.DraggableV(t,t,!0)),
+		this._draggable.on({
 			dragstart: this._onDragStart,
 			drag: this._onDrag,
 			dragend: this._onDragEnd
-		}, this).disable(),
-		this._marker._icon && L.DomUtil.removeClass(this._marker._icon, "leaflet-marker-draggable")
-	},
-	_onDrag: function(t) {
-		var e = this._marker
-		  , i = e._shadow
-		  , n = L.DomUtil.getPosition(e._icon)
-		  , s = e._map.layerPointToLatLng(n);
-		i && L.DomUtil.setPosition(i, n),
-		e._latlng = s,
-		t.latlng = s,
-		t.oldLatLng = this._oldLatLng,
-		e.fire("move", t).fire("drag", t)
+		}, this).enable(),
+		L.DomUtil.addClass(t, "leaflet-marker-draggable")
 	}
 });
 
