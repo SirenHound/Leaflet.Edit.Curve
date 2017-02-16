@@ -22,8 +22,8 @@ L.Curve.include({
     var icons = {
       qControl: new L.DivIconStyled({styleOptions:{backgroundColor: 'yellow'}}),
       cControl1: new L.DivIconStyled({styleOptions:{backgroundColor: 'yellow'}}),
-      cControl2: new L.DivIconStyled({styleOptions:{backgroundColor: 'orange'}})
-      vAnchor: new L.DivIconStyled({styleOptions:{backgroundColor: 'green'}})
+      cControl2: new L.DivIconStyled({styleOptions:{backgroundColor: 'orange'}}),
+      vAnchor: new L.DivIconStyled({styleOptions:{backgroundColor: 'green'}}),
       hAnchor: new L.DivIconStyled({styleOptions:{backgroundColor: 'pink'}})
     };
     
