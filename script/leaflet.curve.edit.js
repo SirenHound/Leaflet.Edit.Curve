@@ -4,9 +4,9 @@ L.DraggableH = L.Draggable.extend({
 			if (i.touches && i.touches.length > 1)
 				return void (this._moved = !0);
 			var n = i.touches && 1 === i.touches.length ? i.touches[0] : i
-			  , s = new L.Point(n.clientX,n.clientY); // r = new L.Point(n.clientX - this._startPoint.x, -this._startPoint.y)
-			  s.x = s.x - this._startPoint.x;
-			  r = s; //s.subtract(this._startPoint);
+			  , /*s = new L.Point(n.clientX,n.clientY); */ r = new L.Point(n.clientX - this._startPoint.x, -this._startPoint.y);
+			 // s.x = s.x - this._startPoint.x;
+			 // r = s; //s.subtract(this._startPoint);
 			(r.x || r.y) && (Math.abs(r.x) + Math.abs(r.y) < this.options.clickTolerance || (L.DomEvent.preventDefault(i),
 			this._moved || (this.fire("dragstart"),
 			this._moved = !0,
