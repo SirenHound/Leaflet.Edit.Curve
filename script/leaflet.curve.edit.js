@@ -38,6 +38,7 @@ L.Draggable = L.Evented.extend({
 		L.DomUtil.disableImageDrag(),
 		L.DomUtil.disableTextSelection(),
 		!this._moving))) {
+			var e = this._dragStartTarget;
 			this.fire("down");
 			var i = t.touches ? t.touches[0] : t;
 			this._startPoint = new L.Point(i.clientX,i.clientY),
