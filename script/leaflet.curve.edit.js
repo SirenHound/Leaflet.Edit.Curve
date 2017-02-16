@@ -1,3 +1,132 @@
+L.Draggable = L.Evented.extend({
+	options: {
+		clickTolerance: 3
+	},
+	statics: {
+		START: L.Browser.touch ? ["touchstart", "mousedown"] : ["mousedown"],
+		END: {
+			mousedown: "mouseup",
+			touchstart: "touchend",
+			pointerdown: "touchend",
+			MSPointerDown: "touchend"
+		},
+		MOVE: {
+			mousedown: "mousemove",
+			touchstart: "touchmove",
+			pointerdown: "touchmove",
+			MSPointerDown: "touchmove"
+		}
+	},
+	initialize: function(t, e, i) {
+		this._element = t,
+		this._dragStartTarget = e || t,
+		this._preventOutline = i
+	},
+	enable: function() {
+		this._enabled || (L.DomEvent.on(this._dragStartTarget, L.Draggable.START.join(" "), this._onDown, this),
+		this._enabled = !0)
+	},
+	disable: function() {
+		this._enabled && (L.DomEvent.off(this._dragStartTarget, L.Draggable.START.join(" "), this._onDown, this),
+		this._enabled = !1,
+		this._moved = !1)
+	},
+	_onDown: function(t) {
+		if (!t._simulated && this._enabled && (this._moved = !1,
+		!L.DomUtil.hasClass(this._element, "leaflet-zoom-anim") && !(L.Draggable._dragging || t.shiftKey || 1 !== t.which && 1 !== t.button && !t.touches) && this._enabled && (L.Draggable._dragging = !0,
+		this._preventOutline && L.DomUtil.preventOutline(this._element),
+		L.DomUtil.disableImageDrag(),
+		L.DomUtil.disableTextSelection(),
+		!this._moving))) {
+			this.fire("down");
+			var i = t.touches ? t.touches[0] : t;
+			this._startPoint = new L.Point(i.clientX,i.clientY),
+			L.DomEvent.on(e, L.Draggable.MOVE[t.type], this._onMove, this).on(e, L.Draggable.END[t.type], this._onUp, this)
+		}
+	},
+	_onMove: function(i) {
+		if (!i._simulated && this._enabled) {
+			if (i.touches && i.touches.length > 1)
+				return void (this._moved = !0);
+			var n = i.touches && 1 === i.touches.length ? i.touches[0] : i
+			  , s = new L.Point(n.clientX,n.clientY) // r = new L.Point(n.clientX - this._startPoint.x, -this._startPoint.y)
+			  , s.x = s.x - this._startPoint.x;
+			  , r = s; //s.subtract(this._startPoint);
+			(r.x || r.y) && (Math.abs(r.x) + Math.abs(r.y) < this.options.clickTolerance || (L.DomEvent.preventDefault(i),
+			this._moved || (this.fire("dragstart"),
+			this._moved = !0,
+			this._startPos = L.DomUtil.getPosition(this._element).subtract(r),
+			L.DomUtil.addClass(e.body, "leaflet-dragging"),
+			this._lastTarget = i.target || i.srcElement,
+			t.SVGElementInstance && this._lastTarget instanceof SVGElementInstance && (this._lastTarget = this._lastTarget.correspondingUseElement),
+			L.DomUtil.addClass(this._lastTarget, "leaflet-drag-target")),
+			this._newPos = this._startPos.add(r),
+			this._moving = !0,
+			L.Util.cancelAnimFrame(this._animRequest),
+			this._lastEvent = i,
+			this._animRequest = L.Util.requestAnimFrame(this._updatePosition, this, !0)))
+		}
+	},
+	_updatePosition: function() {
+		var t = {
+			originalEvent: this._lastEvent
+		};
+		this.fire("predrag", t),
+		L.DomUtil.setPosition(this._element, this._newPos),
+		this.fire("drag", t)
+	},
+	_onUp: function(t) {
+		if (!t._simulated && this._enabled) {
+			L.DomUtil.removeClass(e.body, "leaflet-dragging"),
+			this._lastTarget && (L.DomUtil.removeClass(this._lastTarget, "leaflet-drag-target"),
+			this._lastTarget = null);
+			for (var i in L.Draggable.MOVE)
+				L.DomEvent.off(e, L.Draggable.MOVE[i], this._onMove, this).off(e, L.Draggable.END[i], this._onUp, this);
+			L.DomUtil.enableImageDrag(),
+			L.DomUtil.enableTextSelection(),
+			this._moved && this._moving && (L.Util.cancelAnimFrame(this._animRequest),
+			this.fire("dragend", {
+				distance: this._newPos.distanceTo(this._startPos)
+			})),
+			this._moving = !1,
+			L.Draggable._dragging = !1
+		}
+	}
+});
+
+L.Handler.MarkerDragH = L.Handler.MarkerDrag.extend({
+	addHooks: function() {
+		var t = this._marker._icon;
+		this._draggable || (this._draggable = new L.Draggable(t,t,!0)),
+		this._draggable.on({
+			dragstart: this._onDragStart,
+			drag: this._onDrag,
+			dragend: this._onDragEnd
+		}, this).enable(),
+		L.DomUtil.addClass(t, "leaflet-marker-draggable")
+	},
+	removeHooks: function() {
+		this._draggable.off({
+			dragstart: this._onDragStart,
+			drag: this._onDrag,
+			dragend: this._onDragEnd
+		}, this).disable(),
+		this._marker._icon && L.DomUtil.removeClass(this._marker._icon, "leaflet-marker-draggable")
+	},
+	_onDrag: function(t) {
+		var e = this._marker
+		  , i = e._shadow
+		  , n = L.DomUtil.getPosition(e._icon)
+		  , s = e._map.layerPointToLatLng(n);
+		i && L.DomUtil.setPosition(i, n),
+		e._latlng = s,
+		t.latlng = s,
+		t.oldLatLng = this._oldLatLng,
+		e.fire("move", t).fire("drag", t)
+	}
+});
+
+
 L.DivIconStyled = L.DivIcon.extend({
   createIcon: function(){
     var r = L.DivIcon.prototype.createIcon.apply(this);
@@ -140,3 +269,4 @@ L.Curve.include({
   }
 
 });
+
