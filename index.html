@@ -24,7 +24,7 @@ L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {attribution: '&copy; <a 
 var editableGroup = new L.FeatureGroup().addTo(map);
 var drawControl = new L.Control.Draw(map);//, {edit: {featureGroup: editableGroup}})
 drawControl.addTo(map);
-map.on('L.Draw.Event.CREATED, function(e){
+map.on(L.Draw.Event.CREATED, function(e){
 	editableGroup.addLayer(e.layer);
 });
 
