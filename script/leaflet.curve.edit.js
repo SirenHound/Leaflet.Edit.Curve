@@ -147,7 +147,7 @@ L.Curve.include({
 				//markers.push(new L.Marker(beforeCoord, {type: "control1", icon: new L.DivIcon()}));
 				markers.push(new L.Marker(coords[i+1], {type: "control1", icon: icons.qControl}));
 				markers.push(new L.Marker(coords[i+2], {type: "anchor", icon: new L.DivIcon()}));
-				guiLayers.push(new L.Polyline([beforeCoord, coords[i+1]], {color: 'red'}));
+				//guiLayers.push(new L.Polyline([beforeCoord, coords[i+1]], {color: 'red'}));
 				guiLayers.push(new L.Polyline([coords[i+1], coords[i+2]], {color: 'yellow'}));
 				break;
 			case "C":// Cubic has 3 coords
