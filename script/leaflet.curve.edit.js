@@ -197,10 +197,10 @@ L.Curve.include({
 		else{
 			layers = layers.concat(runSwitch(prev, i-1, coords));
 			switch (prev){
-			case "M": case "L": case "V": case "H": // Single point (or Array)
+			case "M": case "L": case "V": case "H": case "Q":// Single point (or Array)
 				i++;
 				break;
-			case "S": case "Q":// 2 coords
+			case "S":// 2 coords
 				i += 2;
 				break;
 			case "C":// 3 coords
