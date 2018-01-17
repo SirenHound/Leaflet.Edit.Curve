@@ -102,18 +102,18 @@ L.Curve.include({
       hAnchor: new L.DivIconStyled({html: '\u21D4', styleOptions:{cursor: 'ew-resize', backgroundColor: 'pink'}})
     };
     
-	var prev;
+	var instr; var prevInstr;
 	var layers = [];
-	var runSwitch = function(coord, i, coords){
+	var runInstr = function(instr, i, coords){
 		var markers = []; // Markers for showing coordinates
 		var guiLayers = []; // Lines etc to show how the markers relate
-		switch (coord){
+		switch (instr){
 			case "M": case "L": // Single point
 				markers.push(new L.Marker(coords[i+1], {type: "anchor", icon: new L.DivIcon()}));
 				break;
 			case "V":
 				var backBy = 1; // How far back to look for the other half of the coordinate
-				switch (prev) {
+				switch (prevInstr) {
 					case "M": case "L":
 					markers.push(new L.Marker([coords[i+1][0], coords[i-backBy][1]], {type: "anchor", icon: icons.vAnchor}));
 					break;
@@ -129,7 +129,7 @@ L.Curve.include({
 				break;
 			case "H":
 				var backBy = 1; // How far back to look for the other half of the coordinate
-				switch (prev) {
+				switch (prevInstr) {
 					case "M": case "L":
 						markers.push(new L.Marker([coords[i-backBy][0], coords[i+1][0]], {type: "anchor", icon: icons.hAnchor}));
 						break;
@@ -143,8 +143,8 @@ L.Curve.include({
 				}
 				break;
 			case "Q":// Quadratic has 2 coords
-				var beforeCoord = typeof coords[i] === "string"? coords[i-1] : coords[i];
-				markers.push(new L.Marker(beforeCoord, {type: "control1", icon: new L.DivIcon()}));
+				//var beforeCoord = typeof coords[i] === "string"? coords[i-1] : coords[i];
+				//markers.push(new L.Marker(beforeCoord, {type: "control1", icon: new L.DivIcon()}));
 				markers.push(new L.Marker(coords[i+1], {type: "control1", icon: icons.qControl}));
 				markers.push(new L.Marker(coords[i+2], {type: "anchor", icon: new L.DivIcon()}));
 				guiLayers.push(new L.Polyline([beforeCoord, coords[i+1]], {color: 'red'}));
@@ -178,43 +178,13 @@ L.Curve.include({
 		
 		if ("string" === typeof coord){
 
-			layers = layers.concat(runSwitch(coord, i, coords));
-			switch (coord){
-			case "M": case "L": case "V": case "H": case "Q": // Single point (or Array)
-				//i++;
-				break;
-			case "S":// 2 coords
-				i += 2;
-				break;
-			case "C":// 3 coords
-				i += 3;
-				break;
-			default:
-				i++;
-			}
-			
-			prev = coord;
-		}
-		else{
-			layers = layers.concat(runSwitch(prev, i-1, coords));
-			switch (prev){
-			case "M": case "L": case "V": case "H":// Single point (or Array)
-				//i++;
-				break;
-			case "Q":
-				//i += 2;
-				break;
-			case "S":// 2 coords
-				i += 2;
-				break;
-			case "C":// 3 coords
-				i += 3;
-				break;
-			default:
-				i++;
-			}
+			prevInstr = instr
+			instr = coord;
+			// get instruction arguments
+			i++;
 			
 		}
+			layers = layers.concat(runInstr(instr, i, coords));
 	}
     return layers; //markers.concat(guiLayers);
   }
