@@ -109,7 +109,7 @@ L.Curve.include({
 		var guiLayers = []; // Lines etc to show how the markers relate
 		switch (instr){
 			case "M": case "L": // Single point
-				markers.push(new L.Marker(coords[i+1], {type: "anchor", icon: new L.DivIcon()}));
+				markers.push(new L.Marker(coords[i], {type: "anchor", icon: new L.DivIcon()}));
 				break;
 			case "V":
 				var backBy = 1; // How far back to look for the other half of the coordinate
@@ -143,12 +143,10 @@ L.Curve.include({
 				}
 				break;
 			case "Q":// Quadratic has 2 coords
-				//var beforeCoord = typeof coords[i] === "string"? coords[i-1] : coords[i];
-				//markers.push(new L.Marker(beforeCoord, {type: "control1", icon: new L.DivIcon()}));
-				markers.push(new L.Marker(coords[i+1], {type: "control1", icon: icons.qControl}));
-				markers.push(new L.Marker(coords[i+2], {type: "anchor", icon: new L.DivIcon()}));
-				//guiLayers.push(new L.Polyline([beforeCoord, coords[i+1]], {color: 'red'}));
-				guiLayers.push(new L.Polyline([coords[i+1], coords[i+2]], {color: 'yellow'}));
+				markers.push(new L.Marker(coords[i], {type: "control1", icon: icons.qControl}));
+				markers.push(new L.Marker(coords[i+1], {type: "anchor", icon: new L.DivIcon()}));
+				guiLayers.push(new L.Polyline([coords[i], coords[i+1]], {color: 'yellow'}));
+				i += 2;
 				break;
 			case "C":// Cubic has 3 coords
 				markers.push(new L.Marker(coords[i+1], {type: "control1", icon: icons.cControl1}));
