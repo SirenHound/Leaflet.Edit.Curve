@@ -105,8 +105,8 @@ L.Curve.include({
 	var prev;
 	var layers = [];
 	var runSwitch = function(coord, i, coords){
-		var markers = [];
-		var guiLayers = [];
+		var markers = []; // Markers for showing coordinates
+		var guiLayers = []; // Lines etc to show how the markers relate
 		switch (coord){
 			case "M": case "L": // Single point
 				markers.push(new L.Marker(coords[i+1], {type: "anchor", icon: new L.DivIcon()}));
@@ -144,6 +144,7 @@ L.Curve.include({
 				break;
 			case "Q":// Quadratic has 2 coords
 				var beforeCoord = typeof coords[i] === "string"? coords[i-1] : coords[i];
+				markers.push(new L.Marker(beforeCoord, {type: "control1", icon: new L.DivIcon()}));
 				markers.push(new L.Marker(coords[i+1], {type: "control1", icon: icons.qControl}));
 				markers.push(new L.Marker(coords[i+2], {type: "anchor", icon: new L.DivIcon()}));
 				guiLayers.push(new L.Polyline([beforeCoord, coords[i+1]], {color: 'red'}));
@@ -197,8 +198,11 @@ L.Curve.include({
 		else{
 			layers = layers.concat(runSwitch(prev, i-1, coords));
 			switch (prev){
-			case "M": case "L": case "V": case "H": case "Q":// Single point (or Array)
+			case "M": case "L": case "V": case "H":// Single point (or Array)
 				i++;
+				break;
+			case "Q":
+				i += 2;
 				break;
 			case "S":// 2 coords
 				i += 2;
