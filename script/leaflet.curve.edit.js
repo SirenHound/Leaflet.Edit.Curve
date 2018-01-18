@@ -184,7 +184,7 @@ L.Curve.include({
 			layers = layers.concat(runInstr(instr, i, coords));
 		switch(instr){
 			case "Q":
-				i += 2;
+				i ++;
 				break;
 		}
 	}
