@@ -193,3 +193,17 @@ L.Curve.include({
 
 });
 
+L.Edit.Curve = L.Edit.Poly.extend({
+	initialize: function(t, e){
+		this.markers = t.getTypedMarkers(),
+            	this._poly = t,
+            	L.setOptions(this, e),
+            	this._poly.on("revert-edited", this._updateLatLngs, this)
+	},
+	_initMarkers: function(){
+		this._markers = this._poly.getTypedMarkers.map(function(mk){
+			this._bindMarker(mk);
+		}, this);
+	}
+});
+	
