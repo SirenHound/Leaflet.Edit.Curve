@@ -143,7 +143,7 @@ L.Draw.Curve = L.Draw.Feature.extend({
 			if (this._errorShown) {
 				this._hideErrorTooltip();
 			}
-			latLng = this.pointType === "V"? L.latLng(latLng.lat, this._markers[this._markers.length-1].lng) : this.pointType === "V"? L.latLng(this._markers[this._markers.length-1].lat, latLng.lng) : latLng;
+			latLng = this.pointType === "V"? L.latLng(latLng.lat, this._markers[this._markers.length-1].getLatLng().lng) : this.pointType === "H"? L.latLng(this._markers[this._markers.length-1].getLatLng().lat, latLng.lng) : latLng;
 			var newMarker = this._createMarker(latLng);
 			this._markers.push(newMarker);
 			
