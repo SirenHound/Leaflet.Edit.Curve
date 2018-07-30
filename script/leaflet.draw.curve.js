@@ -1,5 +1,15 @@
 // Requires L.Draw
-
+L.Curve.include({
+	newPointIntersects:function(){
+		return L.Polyline.prototype.newPointIntersects.apply(this, arguments);
+	},
+	_getProjectedPoints: function(){
+		for (var t = [], e = this._poly.getLatLngs(), i = 0; i < e.length; i++)
+                t.push(this._map.latLngToLayerPoint(e[i]));
+ return t;
+}
+		
+});
 /*Interface:
 
 Once Enabled,
