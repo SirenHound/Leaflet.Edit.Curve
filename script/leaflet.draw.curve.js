@@ -23,7 +23,7 @@ Once Enabled,
 */
 if (L.Draw) {
 
-L.Draw.Curve = L.Draw.Feature.extend({
+L.Draw.Curve = L.Draw.Polyline.extend({
 	Poly: L.Curve,
 	statics:{
 		SUPPORTED_TYPES: ["M", "L", "H", "V", "C", "Q", "S", "T"]
