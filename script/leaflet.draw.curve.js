@@ -3,6 +3,10 @@ L.Curve.prototype = L.extend({}, L.Polyline.prototype, L.Curve.prototype, {
 	newPointIntersects:function(){
 		return L.Polyline.prototype.newPointIntersects.apply(this, arguments);
 	},
+	newLatLngIntersects:function(){
+		return L.Polyline.prototype.newLatLngIntersects.apply(this, arguments);
+	},
+
 	_getProjectedPoints: function(){
 		for (var t = [], e = this._poly.getLatLngs(), i = 0; i < e.length; i++)
                 t.push(this._map.latLngToLayerPoint(e[i]));
