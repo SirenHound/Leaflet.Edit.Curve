@@ -94,7 +94,7 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 		this._markerGroup.addLayer(e);
 		return e;
 	},
-        _finishShape: function() {
+        _o_finishShape: function() {
             var t = this._poly._defaultShape ? this._poly._defaultShape() : this._poly.getLatLngs(),
 		e = L.Polyline.prototype.newLatLngIntersects.call(this, t[t.length - 1]);
             return !this.options.allowIntersection && e || !this._shapeIsValid() ? void this._showErrorTooltip() : (this._fireCreatedEvent(),
