@@ -12,7 +12,7 @@ L.Curve.prototype = L.extend({}, L.Polyline.prototype, L.Curve.prototype, {
                 t.push(this._map.latLngToLayerPoint(e[i]));
 	 return t;
 	},
-	_defaultShape: null,
+	_defaultShape: function(){return this.getLatLngs();},
 		
 });
 /*Interface:
