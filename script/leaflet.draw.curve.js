@@ -10,8 +10,9 @@ L.Curve.prototype = L.extend({}, L.Polyline.prototype, L.Curve.prototype, {
 	_getProjectedPoints: function(){
 		for (var t = [], e = this._poly.getLatLngs(), i = 0; i < e.length; i++)
                 t.push(this._map.latLngToLayerPoint(e[i]));
- return t;
-}
+	 return t;
+	},
+	_defaultShape: null,
 		
 });
 /*Interface:
