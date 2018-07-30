@@ -1,5 +1,5 @@
 // Requires L.Draw
-L.Curve.include({
+L.Curve.prototype = L.extend({}, L.Polyline.prototype, L.Curve.prototype, {
 	newPointIntersects:function(){
 		return L.Polyline.prototype.newPointIntersects.apply(this, arguments);
 	},
