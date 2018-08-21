@@ -1,3 +1,3 @@
-# Leaflet.Curve.Edit
+# Leaflet.Edit.Curve
 
-[Demo](https://sirenhound.github.io/Leaflet.Curve.Edit/index.html)
+[Demo](https://sirenhound.github.io/Leaflet.Edit.Curve/index.html)
