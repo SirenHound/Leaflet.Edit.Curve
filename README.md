@@ -1,1 +1,1 @@
-# Leaflet.Curve.Edit
+# Leaflet.Edit.Curve
