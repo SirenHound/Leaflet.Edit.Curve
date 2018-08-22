@@ -73,7 +73,7 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 			this._mapDraggable = this._map.dragging.enabled();
 			if (this._mapDraggable){ this._map.dragging.enable(); }
 			this._map._container.style.cursor="default";
-			this._tooltip.dispose();
+			//this._tooltip.dispose();
 			this._map.off("mousedown",this._onMouseDown,this);//.on("mousemove",this._onMouseMove,this);
 		}
 
