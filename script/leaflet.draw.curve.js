@@ -70,7 +70,6 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 	removeHooks: function(){
 		L.Draw.Feature.prototype.removeHooks.call(this);
 		if (this._map) {
-			this._mapDraggable = this._map.dragging.enabled();
 			if (this._mapDraggable){ this._map.dragging.enable(); }
 			this._map._container.style.cursor="default";
 			//this._tooltip.dispose();
