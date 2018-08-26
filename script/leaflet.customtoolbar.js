@@ -25,7 +25,7 @@ L.CustomToolbar = L.DrawToolbar.extend({
   setModeHandlers: function(customModes){
     this._modeHandlers = [
       "Polyline", "Polygon", "Rectangle", "Circle", "Marker", "CircleMarker"
-    ].concat(customModes).map(this.createModeHandler);
+    ].concat(customModes).map(this.createModeHandler, this);
   },
   getModeHandlers: function(map){
     return this._modeHandlers.map(function(modeHandler){
