@@ -8,7 +8,7 @@ L.CustomToolbar = L.DrawToolbar.extend({
     ]
   },
   initialize: function(options){
-    DrawToolbar.prototype.initialize.call(this, options);
+    L.DrawToolbar.prototype.initialize.call(this, options);
 
     this.setModeHandlers(options.customModes);
   },
