@@ -226,12 +226,14 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 		// Get Curves instructions and latlngs from markers
 		var pointType;
 		var pathInstr = this._markers.map(function(marker){
+			var latlng = marker.getLatLng();
+			var latLngAsArray = [latlng.lat, latlng.lng]; // This is how the L.Curve extension wants it for some reason
 			if (pointType === marker.options.pointType){
-				return [marker.getLatLng()];
+				return [latLngAsArray];
 			}
 			else{
 				pointType = marker.options.pointType;
-				return [marker.options.pointType || "M", marker.getLatLng()];
+				return [marker.options.pointType || "M", latLngAsArray];
 			}
 		}).reduce(function(p, v){
 			return p.concat(v);
