@@ -13,7 +13,7 @@ L.Curve.prototype = L.extend({}, L.Polyline.prototype, L.Curve.prototype, {
 	 return t;
 	},
 	_defaultShape: function(){return this.getLatLngs();},
-		
+
 });
 /*Interface:
 
@@ -27,7 +27,7 @@ Once Enabled,
 		create 'L'
 'middle click':
 	constrain drawing vertex to longest axis between middleclick origin and cursor location
-	
+
 'drag'  (mousedown and mouseup outside of pixel tolerance):
   release any constraint
   if CtrlKey down:
@@ -41,6 +41,7 @@ if (L.Draw) {
 L.Draw.Curve = L.Draw.Polyline.extend({
 	Poly: L.Curve,
 	statics:{
+		TYPE: "curve",
 		SUPPORTED_TYPES: ["M", "L", "H", "V", "C", "Q", "S", "T"]
 	},
 	options: {
@@ -48,10 +49,11 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 		allowIntersection: true
 	},
 	initialize: function(map, options){
+		this.type = L.Draw.Curve.TYPE;
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
 		this._markerGroup = new L.LayerGroup().addTo(map);
 		this._markers = [];
-		
+
 		this.pointType = "M";
 	},
 	addHooks: function(){
@@ -123,7 +125,7 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 		this._map.on("mouseup", this._onMouseUp, this);
 		L.DomEvent.preventDefault(evt.originalEvent);
 	},
-	
+
 	/** Updates the shape being drawn using the current mouse position
 	* @param {LeafletMouseEvent} evt - See {@link http://leafletjs.com/reference.html#mouse-event }
 	*/
@@ -144,13 +146,13 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 		if(this._mouseDownOrigin){ // SubClasses may define
 			var pxDist = L.point(orgEvt.clientX, orgEvt.clientY)
 				.distanceTo(this._mouseDownOrigin);
-				
+
 			if (Math.abs(pxDist)<9*(window.devicePixelRatio||1)){
 				this.addVertex(evt.latlng);
 			}
 		}
 		this._mouseDownOrigin=null;
-		
+
 		if (this._shape){ this._fireCreatedEvent(); }
 		//this.disable();
 		//if (this.options.repeatMode){ this.enable(); }
@@ -173,7 +175,7 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 			latLng = this.pointType === "V"? L.latLng(latLng.lat, this._markers[this._markers.length-1].getLatLng().lng) : this.pointType === "H"? L.latLng(this._markers[this._markers.length-1].getLatLng().lat, latLng.lng) : latLng;
 			var newMarker = this._createMarker(latLng);
 			this._markers.push(newMarker);
-			
+
 			//add latlng to path
 			var path = this._poly.getPath();
 			//probably need to have a look at the path to see if current type matches last used type, see how many points need adding etc.
@@ -189,26 +191,26 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 					}
 				*/	break;
 				case "H": case "V": //one point, but really like, half a point
-					
+
 					break;
 				case "C": case "S":
 					break;
 				case "Q":
 					break;
-				
+
 				if (this.pointType !== "C"||false) // do a % thing on number of points
 				this._poly.setPath(path);
-			
+
 			}
-			
+
 				if (this.pointType !== lastInstr){ //bit sloppy, tighten up later
 						path.push(this.pointType, [latLng.lat, latLng.lng]);
 					}
 					else{
 						path.push([latLng.lat, latLng.lng]);
 					}
-				
-			
+
+
 			if (2===this._poly.getPath().length) {
 //				this._map.addLayer(this._poly);
 			}
@@ -216,7 +218,7 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 			this.fire('vertexAdded', latLng);
 		}
 	},
-	
+
 });
 
 }
