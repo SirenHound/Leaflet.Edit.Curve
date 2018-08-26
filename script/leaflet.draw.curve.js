@@ -53,7 +53,6 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
 		this._markerGroup = new L.LayerGroup().addTo(map);
 		this._markers = [];
-
 		this.pointType = "M";
 	},
 	addHooks: function(){
@@ -102,18 +101,22 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 		}
 	},
 	// Will need to be a bit more versitile
-	_createMarker:function(t){
-		var e=new L.Marker(t, {icon: this.options.icon, zIndexOffset: 2*this.options.zIndexOffset});
+	_createMarker:function(t, options){
+		var e=new L.Marker(t, {
+			icon: this.options.icon,
+			zIndexOffset: 2*this.options.zIndexOffset,
+			pointType: options.pointType
+		});
 		this._markerGroup.addLayer(e);
 		return e;
 	},
-        _o_finishShape: function() {
-            var t = this._poly._defaultShape ? this._poly._defaultShape() : this._poly.getLatLngs(),
+  _o_finishShape: function() {
+    var t = this._poly._defaultShape ? this._poly._defaultShape() : this._poly.getLatLngs(),
 		e = L.Polyline.prototype.newLatLngIntersects.call(this, t[t.length - 1]);
-            return !this.options.allowIntersection && e || !this._shapeIsValid() ? void this._showErrorTooltip() : (this._fireCreatedEvent(),
-            this.disable(),
-            void (this.options.repeatMode && this.enable()))
-        },
+    return !this.options.allowIntersection && e || !this._shapeIsValid() ? void this._showErrorTooltip() : (this._fireCreatedEvent(),
+    this.disable(),
+    void (this.options.repeatMode && this.enable()))
+  },
 	_onMouseDown: function(evt) {
 
 		var e=evt.originalEvent;
