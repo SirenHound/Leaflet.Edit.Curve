@@ -173,7 +173,7 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 				this._hideErrorTooltip();
 			}
 			latLng = this.pointType === "V"? L.latLng(latLng.lat, this._markers[this._markers.length-1].getLatLng().lng) : this.pointType === "H"? L.latLng(this._markers[this._markers.length-1].getLatLng().lat, latLng.lng) : latLng;
-			var newMarker = this._createMarker(latLng);
+			var newMarker = this._createMarker(latLng, {pointType: this.pointType});
 			this._markers.push(newMarker);
 
 			//add latlng to path
@@ -218,6 +218,24 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 			this.fire('vertexAdded', latLng);
 		}
 	},
+
+	_fireCreatedEvent: function () {
+		// Get Curves instructions and latlngs from markers
+		var pointType;
+		var pathInstr = this._markers.map(function(marker){
+			if (pointType === marker.options.pointType){
+				return [marker.getLatLng()];
+			}
+			else{
+				pointType = marker.options.pointType;
+				return [marker.options.pointType || "M", marker.getLatLng()];
+			}
+		}).reduce(function(p, v){
+			return p.concat(v);
+		});
+		var poly = new this.Poly(pathInstr, this.options.shapeOptions);
+		L.Draw.Feature.prototype._fireCreatedEvent.call(this, poly);
+	}
 
 });
 
