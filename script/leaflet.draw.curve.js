@@ -82,13 +82,17 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 	},
 	_changePointType: function(evt){
 		var changeTo = evt.key.toUpperCase();
-		if (L.Draw.Curve.SUPPORTED_TYPES.indexOf(changeTo) > -1 && this._markers.length){ // Must start with M
+		if (!this._markers.length){
+			this.pointType = "M";
+		}
+		else if (L.Draw.Curve.SUPPORTED_TYPES.indexOf(changeTo) > -1){ // Must start with M
 			this.pointType = changeTo;
 		}
 		else{
-			console.warn("SVG point type '"+changeTo+"'is not supported or this is the first point and must not be changed from 'M'");
+			console.warn("SVG point type '"+changeTo+"'is not supported");
 		}
 		switch(changeTo){
+				// TODO split up into seperate methods (eg 'C' requires three points, so don't let there be only two)
 			case "V":
 				this._map._container.style.cursor="ns-resize";
 				break;
