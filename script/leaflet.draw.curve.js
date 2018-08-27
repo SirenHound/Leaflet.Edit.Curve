@@ -238,6 +238,7 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 		}).reduce(function(p, v){
 			return p.concat(v);
 		});
+		delete this._poly; delete this._markers;
 		var poly = new this.Poly(pathInstr, this.options.shapeOptions);
 		L.Draw.Feature.prototype._fireCreatedEvent.call(this, poly);
 	}
