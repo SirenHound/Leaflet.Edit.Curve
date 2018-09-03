@@ -253,7 +253,10 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 		});
 		this._markers = [];
 		var poly = new this.Poly(pathInstr, this.options.shapeOptions);
-		L.Draw.Polyline.prototype._fireCreatedEvent.call(this, poly);
+
+		// This overwrites poly with a polyline version
+		//L.Draw.Polyline.prototype._fireCreatedEvent.call(this, poly);
+		L.Draw.Feature.prototype._fireCreatedEvent.call(this, poly);
 	}
 
 });
