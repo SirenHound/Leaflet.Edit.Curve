@@ -54,6 +54,7 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 		this._markerGroup = new L.LayerGroup().addTo(map);
 		this._markers = [];
 		this.pointType = "M";
+		this._updateTooltip();
 	},
 	addHooks: function(){
 		L.Draw.Polyline.prototype.addHooks.call(this);
@@ -188,7 +189,11 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 			if (this._errorShown) {
 				this._hideErrorTooltip();
 			}
-			latLng = this.pointType === "V"? L.latLng(latLng.lat, this._markers[this._markers.length-1].getLatLng().lng) : this.pointType === "H"? L.latLng(this._markers[this._markers.length-1].getLatLng().lat, latLng.lng) : latLng;
+			latLng = this.pointType === "V"?
+				L.latLng(latLng.lat, this._markers[this._markers.length-1].getLatLng().lng) :
+			this.pointType === "H"?
+				L.latLng(this._markers[this._markers.length-1].getLatLng().lat, latLng.lng) :
+			latLng;
 			var newMarker = this._createMarker(latLng, {pointType: this.pointType});
 			this._markers.push(newMarker);
 
@@ -214,18 +219,21 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 				case "Q":
 					break;
 
-				if (this.pointType !== "C"||false) // do a % thing on number of points
-				this._poly.setPath(path);
+				//if (this.pointType !== "C") // do a % thing on number of points
+				//this._poly.setPath(path);
 
 			}
 
-				if (this.pointType !== lastInstr){ //bit sloppy, tighten up later
-						path.push(this.pointType, [latLng.lat, latLng.lng]);
-					}
-					else{
-						path.push([latLng.lat, latLng.lng]);
-					}
-
+			if (this.pointType !== lastInstr || this.pointType === "M"){ //bit sloppy, tighten up later
+				path.push(this.pointType, [latLng.lat, latLng.lng]);
+			}
+			else{
+				path.push([latLng.lat, latLng.lng]);
+			}
+			if (this.pointType === "M"){
+			 	// Explicitly change the command that SVG will interpret as such anyway
+				this._changePointType({key: "L"});
+			}
 
 			if (2===this._poly.getPath().length) {
 //				this._map.addLayer(this._poly);
