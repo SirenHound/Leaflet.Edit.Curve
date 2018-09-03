@@ -54,7 +54,6 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 		this._markerGroup = new L.LayerGroup().addTo(map);
 		this._markers = [];
 		this.pointType = "M";
-		this._initialLabelText = "<b>Point Type: </b>" + this.pointType;
 	},
 	addHooks: function(){
 		L.Draw.Polyline.prototype.addHooks.call(this);
@@ -80,6 +79,9 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 
 		//Until interface is figured out
 		L.DomEvent.off(document, 'keydown', this._changePointType, this);
+	},
+	_getTooltipText: function(){
+		return {text: "<b>Point Type: </b>" + this.pointType};
 	},
 	_changePointType: function(evt){
 		var changeTo = evt.key.toUpperCase();
