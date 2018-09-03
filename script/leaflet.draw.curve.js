@@ -62,7 +62,7 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 			this._mapDraggable = this._map.dragging.enabled();
 			if (this._mapDraggable){ this._map.dragging.disable(); }
 			this._map._container.style.cursor="crosshair";
-			this._tooltip.updateContent({text:this._initialLabelText});
+			this._tooltip.updateContent(this._getTooltipText);
 			this._map.on("mousedown",this._onMouseDown,this);//.on("mousemove",this._onMouseMove,this);
 		}
 		//Until interface is figured out
