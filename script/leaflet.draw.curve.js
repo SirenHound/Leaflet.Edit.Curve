@@ -50,13 +50,14 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 	},
 	initialize: function(map, options){
 		this.type = L.Draw.Curve.TYPE;
-		L.Draw.Feature.prototype.initialize.call(this, map, options);
+		L.Draw.Polyline.prototype.initialize.call(this, map, options);
 		this._markerGroup = new L.LayerGroup().addTo(map);
 		this._markers = [];
 		this.pointType = "M";
+		this._initialLabelText = "<b>Point Type: </b>" + this.pointType;
 	},
 	addHooks: function(){
-		L.Draw.Feature.prototype.addHooks.call(this);
+		L.Draw.Polyline.prototype.addHooks.call(this);
 		this._poly=new this.Poly([],this.options.shapeOptions);
 		if (this._map) {
 			this._mapDraggable = this._map.dragging.enabled();
@@ -69,7 +70,7 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 		L.DomEvent.on(document, 'keydown', this._changePointType, this);
 	},
 	removeHooks: function(){
-		L.Draw.Feature.prototype.removeHooks.call(this);
+		L.Draw.Polyline.prototype.removeHooks.call(this);
 		if (this._map) {
 			if (this._mapDraggable){ this._map.dragging.enable(); }
 			this._map._container.style.cursor="default";
@@ -87,6 +88,7 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 		}
 		else if (L.Draw.Curve.SUPPORTED_TYPES.indexOf(changeTo) > -1){ // Must start with M
 			this.pointType = changeTo;
+			this._tooltip.updateContent({text:"<b>Point Type: </b>" + this.pointType});
 		}
 		else{
 			console.warn("SVG point type '"+changeTo+"'is not supported");
@@ -244,7 +246,7 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 		});
 		this._markers = [];
 		var poly = new this.Poly(pathInstr, this.options.shapeOptions);
-		L.Draw.Feature.prototype._fireCreatedEvent.call(this, poly);
+		L.Draw.Polyline.prototype._fireCreatedEvent.call(this, poly);
 	}
 
 });
