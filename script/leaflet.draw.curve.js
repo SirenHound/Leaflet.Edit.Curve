@@ -142,11 +142,16 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 		var e = evt.latlng;
 		this._tooltip.updatePosition(e);
 		if (this._isDrawing) {
-			this._tooltip.updateContent({
-				text: this._endLabelText
-			});
-			this._drawShape(e);
+		/*	this._tooltip.updateContent({
+				text: "<b>Point Type: </b>" + this.pointType
+			});*/
+			this._drawShape(evt);
 		}
+	},
+	// just drawGuide
+	_drawShape: function(e){
+		var newPos = this._map.mouseEventToLayerPoint(e.originalEvent);
+		this._updateGuide(newPos);
 	},
 	// Finishing a point defined by a line that was dragged out (eg. C or Q)
 	// Taken from SimpleShape handler.
