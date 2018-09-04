@@ -107,8 +107,7 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 				this.finishInstruction();
 			}
 
-			var path = this._poly.getPath();
-			var newShape = path.slice(-1)[0] === "Z";
+			var newShape = this._markers.slice(-1)[0] === "Z";
 
 			if (!this._markers.length){
 				this.pointType = "M";
@@ -117,13 +116,13 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 				if (changeTo === "Z"){
 					// toggle between closing shape and reverting to previous type on successive keypresses
 					this._previousType = this._previousType || this.pointType;
-					path.pop();
+					this._markers.pop();
 					this.pointType = this._previousType;
 				}
 			}
 			else{
 				if (changeTo === "Z"){
-					path.push("Z");
+					this._markers.push("Z");
 					this.pointType = "M";
 				}
 				else{
@@ -287,9 +286,11 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 	},
 
 	_fireCreatedEvent: function () {
+		this.finishInstruction();
 		// Get Curves instructions and latlngs from markers
 		var pointType;
 		var pathInstr = this._markers.map(function(marker){
+			if (marker === "Z"){return marker;}
 			var latlng = marker.getLatLng();
 			var latLngAsArray = [latlng.lat, latlng.lng]; // This is how the L.Curve extension wants it for some reason
 			if (pointType === marker.options.pointType){
