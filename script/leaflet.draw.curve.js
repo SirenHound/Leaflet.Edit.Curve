@@ -42,7 +42,7 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 	Poly: L.Curve,
 	statics:{
 		TYPE: "curve",
-		SUPPORTED_TYPES: ["M", "L", "H", "V", "C", "Q", "S", "T"]
+		SUPPORTED_TYPES: ["M", "L", "H", "V", "C", "Q", "S", "T", "Z"]
 	},
 	options: {
 		icon:new L.DivIcon({iconSize:new L.Point(8,8),className:"leaflet-div-icon leaflet-editing-icon"}),
@@ -63,7 +63,7 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 			this._mapDraggable = this._map.dragging.enabled();
 			if (this._mapDraggable){ this._map.dragging.disable(); }
 			this._map._container.style.cursor="crosshair";
-			this._tooltip.updateContent(this._getTooltipText());
+			this._tooltip.updateContent(this._getTooltipText);
 			this._map.on("mousedown",this._onMouseDown,this);//.on("mousemove",this._onMouseMove,this);
 		}
 		// Keyboard interface for switching commands
@@ -90,18 +90,13 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 	finishInstruction: function(){
 		var path = this._poly.getPath();
 		var numberOfParameters = path.length - path.lastIndexOf(this.pointType) - 1;
-		switch(this.pointType){
-			case "Q":
-			case "S":
-				// Expects two points
-				if (numberOfParameters%2){
-					// double up the last point
-					path.push(path.slice(-1)[0]);
-				}
-			default: // M L T 
+		var extraneousParameters = numberOfParameters%("QS".indexOf(this.pointType)!==-1?2:this.pointType==="C"?3:1);
+		while (extraneousParameters--){
+			path.push(path[path.length-1]);
 		}
+		return path; // why not.
 	},
-	
+
 	_changePointType: function(evt){
 		var changeTo = evt.key.toUpperCase();
 		if (L.Draw.Curve.SUPPORTED_TYPES.indexOf(changeTo) > -1){ // Must start with M
@@ -152,7 +147,7 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 			console.warn("SVG point type '"+changeTo+"'is not supported");
 		}
 	},
-	
+
 	// Will need to be a bit more versitile
 	_createMarker:function(t, options){
 		var e=new L.Marker(t, {
