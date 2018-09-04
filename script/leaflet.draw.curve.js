@@ -95,7 +95,7 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 		var extraneousParameters = numberOfParameters%instructionGoal;
 		while (extraneousParameters%instructionGoal){
 			extraneousParameters++;
-			this._markers.push(this.createMarker(path[path.length-1], {pointType:lastInstr}));
+			this._markers.push(this._createMarker(path[path.length-1], {pointType:lastInstr}));
 		}
 		return path; // why not.
 	},
