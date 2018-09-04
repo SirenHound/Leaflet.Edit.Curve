@@ -310,9 +310,9 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 			var latLngAsArray = marker.options.pointType === "A"? [
 					marker.options.radius.x, marker.options.radius.y,
 					marker.options.xAxisRot,
-					marker.options.largeArc,
-					marker.options.sweep,
-					latlng.lat, latlng.lng
+					marker.options.largeArc?1:0,
+					marker.options.sweep?1:0,
+					[latlng.lat, latlng.lng]
 				]:
 			[latlng.lat, latlng.lng]; // This is how the L.Curve extension wants it for some reason
 
