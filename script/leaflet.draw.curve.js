@@ -88,10 +88,12 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 	* NOTE only checks number of commands not their types (number, coord)
 	*/
 	finishInstruction: function(){
+		var instructionGoal = "QS".indexOf(this.pointType)!==-1?2:this.pointType==="C"?3:1;
 		var path = this._poly.getPath();
 		var numberOfParameters = path.length - path.lastIndexOf(this.pointType) - 1;
-		var extraneousParameters = numberOfParameters%("QS".indexOf(this.pointType)!==-1?2:this.pointType==="C"?3:1);
-		while (extraneousParameters--){
+		var extraneousParameters = numberOfParameters%instructionGoal;
+		while (extraneousParameters%instructionGoal){
+			extraneousParameters++;
 			path.push(path[path.length-1]);
 		}
 		return path; // why not.
