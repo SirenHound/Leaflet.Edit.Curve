@@ -240,7 +240,7 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 				// placeholder
 				{
 					pointType: "A",
-					radius: L.point(25, 50),//pixels
+					radius: L.point(0.05, 0.2), // elfam wants degrees :/
 					xAxisRot: 30,
 					largeArc: true,
 					sweep: true
@@ -312,7 +312,7 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 					marker.options.xAxisRot,
 					marker.options.largeArc?1:0,
 					marker.options.sweep?1:0,
-					[latlng.lat, latlng.lng]
+					latlng.lat, latlng.lng
 				]:
 			[latlng.lat, latlng.lng]; // This is how the L.Curve extension wants it for some reason
 
