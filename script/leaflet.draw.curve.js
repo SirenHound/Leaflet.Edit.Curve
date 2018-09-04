@@ -152,11 +152,10 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 
 	// Will need to be a bit more versitile
 	_createMarker:function(t, options){
-		var e=new L.Marker(t, {
+		var e=new L.Marker(t, L.Util.extend({
 			icon: this.options.icon,
-			zIndexOffset: 2*this.options.zIndexOffset,
-			pointType: options.pointType
-		});
+			zIndexOffset: 2*this.options.zIndexOffset
+		}, options));
 		this._markerGroup.addLayer(e);
 		return e;
 	},
