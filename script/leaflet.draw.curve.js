@@ -54,7 +54,7 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 		this._markerGroup = new L.LayerGroup().addTo(map);
 		this._markers = [];
 		this.pointType = "M";
-		this._updateTooltip();
+		//this._updateTooltip();
 	},
 	addHooks: function(){
 		L.Draw.Polyline.prototype.addHooks.call(this);
@@ -66,7 +66,7 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 			this._tooltip.updateContent(this._getTooltipText);
 			this._map.on("mousedown",this._onMouseDown,this);//.on("mousemove",this._onMouseMove,this);
 		}
-		//Until interface is figured out
+		// Keyboard interface for switching commands
 		L.DomEvent.on(document, 'keydown', this._changePointType, this);
 	},
 	removeHooks: function(){
@@ -84,31 +84,75 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 	_getTooltipText: function(){
 		return {text: "<b>Point Type: </b>" + this.pointType};
 	},
+	/** Makes sure that the previous instruction has the right commands following it
+	* NOTE only checks number of commands not their types (number, coord)
+	*/
+	finishInstruction: function(){
+		var path = this._poly.getPath();
+		var numberOfParameters = path.length - path.lastIndexOf(this.pointType) - 1;
+		switch(this.pointType){
+			case "Q":
+			case "S":
+				// Expects two points
+				if (numberOfParameters%2){
+					// double up the last point
+					path.push(path.slice(-1)[0]);
+				}
+			default: // M L T 
+		}
+	},
+	
 	_changePointType: function(evt){
 		var changeTo = evt.key.toUpperCase();
-		if (!this._markers.length){
-			this.pointType = "M";
-		}
-		else if (L.Draw.Curve.SUPPORTED_TYPES.indexOf(changeTo) > -1){ // Must start with M
-			this.pointType = changeTo;
+		if (L.Draw.Curve.SUPPORTED_TYPES.indexOf(changeTo) > -1){ // Must start with M
+			if (changeTo !== this.pointType){
+				this.finishInstruction();
+			}
+
+			var path = this._poly.getPath();
+			var newShape = path.slice(-1)[0] === "Z";
+
+			if (!this._markers.length){
+				this.pointType = "M";
+			}
+			else if (newShape){
+				if (changeTo === "Z"){
+					// toggle between closing shape and reverting to previous type on successive keypresses
+					this._previousType = this._previousType || this.pointType;
+					path.pop();
+					this.pointType = this._previousType;
+				}
+			}
+			else{
+				if (changeTo === "Z"){
+					path.push("Z");
+					this.pointType = "M";
+				}
+				else{
+					this._previousType = null;
+					this.pointType = changeTo;
+				}
+			}
 			this._tooltip.updateContent({text:"<b>Point Type: </b>" + this.pointType});
+
+			switch(changeTo){
+					// TODO split up into seperate methods (eg 'C' requires three points, so don't let there be only two)
+				case "V":
+					this._map._container.style.cursor="ns-resize";
+					break;
+				case "H":
+					this._map._container.style.cursor="ew-resize";
+					break;
+				default:
+					this._map._container.style.cursor="crosshair";
+					break;
+			}
 		}
 		else{
 			console.warn("SVG point type '"+changeTo+"'is not supported");
 		}
-		switch(changeTo){
-				// TODO split up into seperate methods (eg 'C' requires three points, so don't let there be only two)
-			case "V":
-				this._map._container.style.cursor="ns-resize";
-				break;
-			case "H":
-				this._map._container.style.cursor="ew-resize";
-				break;
-			default:
-				this._map._container.style.cursor="crosshair";
-				break;
-		}
 	},
+	
 	// Will need to be a bit more versitile
 	_createMarker:function(t, options){
 		var e=new L.Marker(t, {
