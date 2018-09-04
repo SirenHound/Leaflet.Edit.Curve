@@ -42,7 +42,7 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 	Poly: L.Curve,
 	statics:{
 		TYPE: "curve",
-		SUPPORTED_TYPES: ["M", "L", "H", "V", "C", "Q", "S", "T", "Z"]
+		SUPPORTED_TYPES: ["M", "L", "H", "V", "C", "Q", "S", "T", "Z", "A"]
 	},
 	options: {
 		icon:new L.DivIcon({iconSize:new L.Point(8,8),className:"leaflet-div-icon leaflet-editing-icon"}),
@@ -97,7 +97,7 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 			extraneousParameters++;
 			this._markers.push(this._createMarker(path[path.length-1], {pointType:lastInstr}));
 		}
-		return path; // why not.
+		return path; // might as well.
 	},
 
 	_changePointType: function(evt){
@@ -236,7 +236,19 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 			this.pointType === "H"?
 				L.latLng(this._markers[this._markers.length-1].getLatLng().lat, latLng.lng) :
 			latLng;
-			var newMarker = this._createMarker(latLng, {pointType: this.pointType});
+
+			var options = this.pointType === "A"?
+				// placeholder
+				{
+					pointType: "A",
+					radius: L.point(25, 50),//pixels
+					xAxisRot: 30,
+					largeArc: true,
+					sweep: true
+				}:
+			{pointType: this.pointType};
+
+			var newMarker = this._createMarker(latLng, options);
 			this._markers.push(newMarker);
 
 			//add latlng to path
@@ -290,9 +302,21 @@ L.Draw.Curve = L.Draw.Polyline.extend({
 		// Get Curves instructions and latlngs from markers
 		var pointType;
 		var pathInstr = this._markers.map(function(marker){
-			if (marker === "Z"){return marker;}
+			if (marker.options.pointType === "Z"){
+				pointType = marker.options.pointType;
+				return [marker.options.pointType];
+			}
+
 			var latlng = marker.getLatLng();
-			var latLngAsArray = [latlng.lat, latlng.lng]; // This is how the L.Curve extension wants it for some reason
+			var latLngAsArray = marker.options.pointType === "A"? [
+					marker.options.radius.x, marker.options.radius.y,
+					marker.options.xAxisRot,
+					marker.options.largeArc,
+					marker.options.sweep,
+					latlng.lat, latlng.lng
+				]:
+			[latlng.lat, latlng.lng]; // This is how the L.Curve extension wants it for some reason
+
 			if (pointType === marker.options.pointType){
 				return [latLngAsArray];
 			}
