@@ -101,12 +101,21 @@ L.Curve.include({
       vAnchor: new L.DivIconStyled({html: '\u21D5', styleOptions:{cursor: 'ns-resize', backgroundColor: 'lightblue'}}),
       hAnchor: new L.DivIconStyled({html: '\u21D4', styleOptions:{cursor: 'ew-resize', backgroundColor: 'pink'}})
     };
-    
+
 	var instr; var prevInstr;
 	var layers = [];
+	/** Runs instruction in coords array (callback format but called manually)
+	* NOTE instr has been modified. It is i-1 until further notice
+	* @param {string}
+	* @param {number}
+	* @param {Array.<(string|Array.<number>)}
+	*/
 	var runInstr = function(instr, i, coords){
 		var markers = []; // Markers for showing coordinates
 		var guiLayers = []; // Lines etc to show how the markers relate
+		/* i-2 instr(i-1) (i) i+1*/
+		var pCoord = typeof coords[i-1] === "string"? coords[i-2] : coords[i-1];
+		var ppCoord = typeof coords[i-1] === "string"? coords[i-3] : coords[i-2];
 		switch (instr){
 			case "M": case "L": // Single point
 				markers.push(new L.Marker(coords[i], {type: "anchor", icon: new L.DivIcon()}));
@@ -118,7 +127,7 @@ L.Curve.include({
 					markers.push(new L.Marker([coords[i+1][0], coords[i-backBy][1]], {type: "anchor", icon: icons.vAnchor}));
 					break;
 					case "V":// Need to go back further! \21D4
-//					markers.push(new L.Marker([coords[i+1][0], coords[i-backBy][0]], {type: "anchor", icon: icons.vAnchor}));
+					//					markers.push(new L.Marker([coords[i+1][0], coords[i-backBy][0]], {type: "anchor", icon: icons.vAnchor}));
 					break;
 					case "H":
 					markers.push(new L.Marker([coords[i+1][0], coords[i-backBy][0]], {type: "anchor", icon: icons.vAnchor}));
@@ -152,34 +161,34 @@ L.Curve.include({
 				markers.push(new L.Marker(coords[i+2], {type: "control1", icon: icons.cControl2}));
 				markers.push(new L.Marker(coords[i+3], {type: "anchor", icon: new L.DivIcon()}));
 				// first coord works with previous point. coords has already calculated point from partials (V, H)
-				guiLayers.push(new L.Polyline([coords[i-1], coords[i+1]], {color: 'yellow'}));
+				guiLayers.push(new L.Polyline([pCoord, coords[i+1]], {color: 'yellow'}));
 				guiLayers.push(new L.Polyline([coords[i+2], coords[i+3]], {color: 'yellow'}));
 				break;
 			case "S":// S is shortcut C. Will fail following M L V H
-				var reflCoord = [2*coords[i-1][0] - coords[i-2][0], 2*coords[i-1][1] - coords[i-2][1]];
+				var reflCoord = [2*pCoord[0] - ppCoord[0], 2*pCoord[1] - ppCoord[1]];
 				markers.push(new L.Marker(reflCoord, {type: "control1", icon: icons.cControl1}));
 				markers.push(new L.Marker(coords[i+1], {type: "control1", icon: icons.cControl2}));
 				markers.push(new L.Marker(coords[i+2], {type: "anchor", icon: new L.DivIcon()}));
 				// first coord works with previous point. coords has already calculated point from partials (V, H)
-				guiLayers.push(new L.Polyline([coords[i-2], reflCoord], {color: 'yellow'}));
+				guiLayers.push(new L.Polyline([ppCoord, reflCoord], {color: 'yellow'}));
 				guiLayers.push(new L.Polyline([coords[i+2], coords[i+3]], {color: 'yellow'}));
 				break;
 		}
 		return markers.concat(guiLayers);
 	};
-	
+
 	var coords = this._coords;
 	for (var i = 0; i < coords.length;i++){
 	//this._coords.forEach(function(coord, i, coords){
 		var coord = coords[i];
-		
+
 		if ("string" === typeof coord){
 
-			prevInstr = instr
-			instr = coord;
+			prevInstr = instr; // string|undefined
+			instr = coord; // string
 			// get instruction arguments
 			i++;
-			
+
 		}
 			layers = layers.concat(runInstr(instr, i, coords));
 		switch(instr){
@@ -211,4 +220,3 @@ L.Edit.Curve = L.Edit.Poly.extend({
 		}, this);
 	}
 });
-	
