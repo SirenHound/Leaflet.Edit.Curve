@@ -190,9 +190,12 @@ L.Curve.include({
 			i++;
 
 		}
-			layers = layers.concat(runInstr(instr, i, coords));
+		layers = layers.concat(runInstr(instr, i, coords));
 		switch(instr){
+			case "C":
+				i ++;
 			case "Q":
+			case "S":
 				i ++;
 				break;
 		}
