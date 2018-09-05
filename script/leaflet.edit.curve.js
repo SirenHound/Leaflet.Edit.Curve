@@ -157,21 +157,21 @@ L.Curve.include({
 				guiLayers.push(new L.Polyline([coords[i], coords[i+1]], {color: 'yellow'}));
 				break;
 			case "C":// Cubic has 3 coords
-				markers.push(new L.Marker(coords[i+1], {type: "control1", icon: icons.cControl1}));
-				markers.push(new L.Marker(coords[i+2], {type: "control1", icon: icons.cControl2}));
-				markers.push(new L.Marker(coords[i+3], {type: "anchor", icon: new L.DivIcon()}));
+				markers.push(new L.Marker(coords[i], {type: "control1", icon: icons.cControl1}));
+				markers.push(new L.Marker(coords[i+1], {type: "control1", icon: icons.cControl2}));
+				markers.push(new L.Marker(coords[i+2], {type: "anchor", icon: new L.DivIcon()}));
 				// first coord works with previous point. coords has already calculated point from partials (V, H)
-				guiLayers.push(new L.Polyline([pCoord, coords[i+1]], {color: 'yellow'}));
-				guiLayers.push(new L.Polyline([coords[i+2], coords[i+3]], {color: 'yellow'}));
+				guiLayers.push(new L.Polyline([pCoord, coords[i]], {color: 'yellow'}));
+				guiLayers.push(new L.Polyline([coords[i+1], coords[i+2]], {color: 'limegreen'}));
 				break;
 			case "S":// S is shortcut C. Will fail following M L V H
 				var reflCoord = [2*pCoord[0] - ppCoord[0], 2*pCoord[1] - ppCoord[1]];
 				markers.push(new L.Marker(reflCoord, {type: "control1", icon: icons.cControl1}));
-				markers.push(new L.Marker(coords[i+1], {type: "control1", icon: icons.cControl2}));
-				markers.push(new L.Marker(coords[i+2], {type: "anchor", icon: new L.DivIcon()}));
+				markers.push(new L.Marker(coords[i], {type: "control1", icon: icons.cControl2}));
+				markers.push(new L.Marker(coords[i+1], {type: "anchor", icon: new L.DivIcon()}));
 				// first coord works with previous point. coords has already calculated point from partials (V, H)
 				guiLayers.push(new L.Polyline([ppCoord, reflCoord], {color: 'yellow'}));
-				guiLayers.push(new L.Polyline([coords[i+2], coords[i+3]], {color: 'yellow'}));
+				guiLayers.push(new L.Polyline([coords[i], coords[i+1]], {color: 'limegreen'}));
 				break;
 		}
 		return markers.concat(guiLayers);
